@@ -17,8 +17,30 @@ Pull requests are always welcome.
 ...
 
 ##### Maven setup
+Add this GitHub repository to you project pom
 
-...
+```xml
+<repositories>
+    <repository>
+        <id>spring-boot-throttling-repo</id>
+        <url>https://raw.github.com/weddini/spring-boot-throttling/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+Add the following code to dependencies section of you pom.xml:
+
+```xml
+<dependency>
+    <groupId>com.weddini.throttling</groupId>
+    <artifactId>spring-boot-throttling-starter</artifactId>
+    <version>0.0.3</version>
+</dependency>
+```
+
 
 ### Samples
 
@@ -40,7 +62,7 @@ public void serviceMethod() {
 ```
 
 ##### Spring Expression Language (SpEL)
-The following throttling configuration allows 3 method calls per minute for each unique userName in model object passed as parameter `model.getUserName()`.
+The following throttling configuration allows 3 method calls per MINUTE for each unique userName in model object passed as parameter, i.e. `model.getUserName()`.
 
 Please refer to official [docs on SpEL](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html).
  
@@ -52,7 +74,7 @@ public void serviceMethod(Model model) {
 ```
 
 ##### Http cookie value
-The following throttling configuration allows 24 method calls per DAY for each unique cookie value `HttpServletRequest#getCookies()`.
+The following throttling configuration allows 24 method calls per DAY for each unique cookie value retrieved from `HttpServletRequest#getCookies()`.
 
 ```java
 @Throttling(type = ThrottlingType.CookieValue, cookieName = "JSESSIONID", limit = 24, timeUnit = TimeUnit.DAYS)
@@ -61,7 +83,7 @@ public void serviceMethod() {
 ```
 
 ##### Http header value
-The following throttling configuration allows 10 method calls per HOUR for each unique `HttpServletRequest#getHeader('X-Forwarded-For')`.
+The following throttling configuration allows 10 method calls per HOUR for each unique header value retrieved from `HttpServletRequest#getHeader('X-Forwarded-For')`.
 
 ```java
 @Throttling(type = ThrottlingType.HeaderValue, headerName = "X-Forwarded-For", limit = 10, timeUnit = TimeUnit.HOURS)
