@@ -33,10 +33,7 @@ public void serviceMethod() {
 ##### Spring Expression Language (SpEL)
  
 ```java
-@Throttling(limit = 3,
-        timeUnit = TimeUnit.MINUTES,
-        type = ThrottlingType.SpEL,
-        expression = "#model.userName")
+@Throttling(limit = 3, timeUnit = TimeUnit.MINUTES, type = ThrottlingType.SpEL, expression = "#model.userName")
 public void serviceMethod(Model model) {
     log.info("executing service logic for userName = {}", model.getUserName());
 }
@@ -45,10 +42,7 @@ public void serviceMethod(Model model) {
 ##### Http cookie value
 
 ```java
-@Throttling(limit = 24,
-        timeUnit = TimeUnit.DAYS,
-        type = ThrottlingType.CookieValue,
-        cookieName = "JSESSIONID")
+@Throttling(limit = 24, timeUnit = TimeUnit.DAYS, type = ThrottlingType.CookieValue, cookieName = "JSESSIONID")
 public void serviceMethod() {
 }
 ```
@@ -56,10 +50,7 @@ public void serviceMethod() {
 ##### Http header value
 
 ```java
-@Throttling(limit = 10,
-        timeUnit = TimeUnit.HOURS,
-        type = ThrottlingType.HeaderValue,
-        headerName = "X-Forwarded-For")
+@Throttling(limit = 10, timeUnit = TimeUnit.HOURS, type = ThrottlingType.HeaderValue, headerName = "X-Forwarded-For")
 public void serviceMethod() {
 }
 ```
