@@ -1,4 +1,5 @@
 # Spring Boot Throttling
+![travis-ci](https://travis-ci.org/weddini/spring-boot-throttling.svg?branch=master)
 
 ### Overview
 
