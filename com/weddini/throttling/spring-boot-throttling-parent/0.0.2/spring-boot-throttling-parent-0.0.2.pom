@@ -5,7 +5,7 @@
     <artifactId>spring-boot-throttling-parent</artifactId>
     <version>0.0.2</version>
     <packaging>pom</packaging>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
@@ -50,7 +50,7 @@
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.11</version>
                 <configuration>
-                    <!--<merge>true</merge>-->
+                    <merge>true</merge>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
                     <outputDirectory>${project.basedir}/mvn-r‌​epo</outputDirectory>

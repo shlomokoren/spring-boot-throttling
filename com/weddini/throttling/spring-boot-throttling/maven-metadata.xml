@@ -3,10 +3,11 @@
   <groupId>com.weddini.throttling</groupId>
   <artifactId>spring-boot-throttling</artifactId>
   <versioning>
-    <release>0.0.2</release>
+    <release>0.0.3</release>
     <versions>
       <version>0.0.2</version>
+      <version>0.0.3</version>
     </versions>
-    <lastUpdated>20171103175051</lastUpdated>
+    <lastUpdated>20171103232225</lastUpdated>
   </versioning>
 </metadata>
