@@ -92,9 +92,16 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
 
                     } else {
 
-                        HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                        HttpServletRequest servletRequest = null;
+                        try {
+                            servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                        } catch (IllegalStateException e) {
+                            logger.error("No RequestAttributes object is bound to the current thread. " +
+                                    "Please check @Throttling configuration.", e);
+                        }
+                        
                         if (servletRequest == null) {
-                            logger.warn("Cannot find HttpServletRequest in RequestContextHolder while processing " +
+                            logger.error("Cannot find HttpServletRequest in RequestContextHolder while processing " +
                                     "@Throttling annotation with type '" + annotation.type().name() + "'");
 
                         } else {
@@ -137,8 +144,7 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
                             }
                         }
                     }
-
-
+                    
                     return value;
                 };
 

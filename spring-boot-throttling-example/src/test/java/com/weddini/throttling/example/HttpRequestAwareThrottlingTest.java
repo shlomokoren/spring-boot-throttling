@@ -60,7 +60,6 @@ public class HttpRequestAwareThrottlingTest {
                     .with(postProcessor1))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
         mockMvc.perform(get("/throttling/remoteAddr/Alex")
                 .with(postProcessor1))
@@ -72,9 +71,7 @@ public class HttpRequestAwareThrottlingTest {
                     .with(postProcessor2))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
-
         mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                 .with(postProcessor2))
                 .andExpect(status().is(429));
@@ -88,7 +85,6 @@ public class HttpRequestAwareThrottlingTest {
                     .with(postProcessor1))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
         mockMvc.perform(get("/throttling/remoteAddr/Alex")
                 .with(postProcessor1))
@@ -100,9 +96,7 @@ public class HttpRequestAwareThrottlingTest {
                     .with(postProcessor2))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
-
         mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                 .with(postProcessor2))
                 .andExpect(status().is(429));
@@ -117,7 +111,6 @@ public class HttpRequestAwareThrottlingTest {
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
         mockMvc.perform(get("/throttling/header/Alex")
                 .header("X-Forwarded-For", "10.10.10.10"))
@@ -129,7 +122,6 @@ public class HttpRequestAwareThrottlingTest {
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
 
         mockMvc.perform(get("/throttling/header/Vasya")
@@ -145,7 +137,6 @@ public class HttpRequestAwareThrottlingTest {
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
         mockMvc.perform(get("/throttling/header/Alex")
                 .header("X-Forwarded-For", "10.10.10.10"))
@@ -157,12 +148,10 @@ public class HttpRequestAwareThrottlingTest {
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(contentType));
-
         }
-
         mockMvc.perform(get("/throttling/header/Vasya")
                 .header("X-Forwarded-For", "10.10.10.101"))
                 .andExpect(status().is(429));
-
     }
+
 }

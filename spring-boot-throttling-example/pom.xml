@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-boot-throttling.version>0.0.2</spring-boot-throttling.version>
+        <spring-boot-throttling.version>0.0.3</spring-boot-throttling.version>
     </properties>
 
     <repositories>
