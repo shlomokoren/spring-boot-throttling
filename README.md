@@ -14,10 +14,24 @@ Pull requests are always welcome.
 
 ##### Gradle setup
 
-...
+Add maven repo with url https://jitpack.io to you project
+
+```groovy
+repositories {
+ maven { url "https://jitpack.io" }
+}
+
+```
+
+Add the following code to dependencies section of your build.gradle:
+
+```groovy
+compile 'com.weddini.throttling:spring-boot-throttling-starter:0.0.3'
+
+```
 
 ##### Maven setup
-Add this GitHub repository to you project pom
+Add this GitHub repository to you project
 
 ```xml
 <repositories>
@@ -31,7 +45,7 @@ Add this GitHub repository to you project pom
     </repository>
 </repositories>
 ```
-Add the following code to dependencies section of you pom.xml:
+Add the following code to dependencies section of your pom.xml:
 
 ```xml
 <dependency>
@@ -44,7 +58,7 @@ Add the following code to dependencies section of you pom.xml:
 
 ### Samples
 
-##### Defaults, Remote IP
+##### Defaults (Remote IP)
 The following throttling configuration allows 1 method calls per SECOND for each unique `HttpServletRequest#getRemoteAddr()`.
 This is 'defaults' for `@Throttling` annotation.
 
