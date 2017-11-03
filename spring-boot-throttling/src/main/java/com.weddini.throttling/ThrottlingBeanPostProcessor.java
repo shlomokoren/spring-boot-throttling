@@ -1,11 +1,14 @@
 package com.weddini.throttling;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -30,8 +33,7 @@ import static org.springframework.core.annotation.AnnotationUtils.findAnnotation
  */
 public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
 
-    @Resource
-    private HttpServletRequest servletRequest;
+    private final Log logger = LogFactory.getLog(getClass());
 
     private final LRUCache<ThrottlingKey, ThrottlingGauge> cache;
     private final Map<String, Class> beanNamesToOriginalClasses;
@@ -50,6 +52,9 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
         for (Method method : bean.getClass().getMethods()) {
             Throttling annotation = method.getAnnotation(Throttling.class);
             if (annotation != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Discovered bean '" + beanName + "' annotated with @Throttling");
+                }
                 beanNamesToOriginalClasses.put(beanName, bean.getClass());
                 break;
             }
@@ -64,16 +69,85 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
             return bean;
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("Replacing bean '" + beanName + "' with a Proxy");
+        }
+
         return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), (proxy, method, args) -> {
+
             Throttling annotation = findAnnotation(clazz.getMethod(method.getName(), method.getParameterTypes()), Throttling.class);
+
             if (annotation != null) {
+
+                ThrottlingValueEvaluator throttlingEvaluator = () -> {
+                    String value = null;
+
+                    if (annotation.type().equals(SpEL) && !StringUtils.isEmpty(annotation.expression())) {
+                        try {
+                            value = spelEvaluator.evaluate(annotation.expression(), bean, args, clazz, method);
+                        } catch (Throwable t) {
+                            logger.error("Exception occurred while evaluating SpEl expression = '" +
+                                    annotation.expression() + "', Please check @Throttling configuration.", t);
+                        }
+
+                    } else {
+
+                        HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                        if (servletRequest == null) {
+                            logger.warn("Cannot find HttpServletRequest in RequestContextHolder while processing " +
+                                    "@Throttling annotation with type '" + annotation.type().name() + "'");
+
+                        } else {
+
+                            switch (annotation.type()) {
+                                case CookieValue:
+                                    if (!StringUtils.isEmpty(annotation.cookieName())) {
+                                        value = Arrays.stream(servletRequest.getCookies())
+                                                .filter(c -> c.getName().equals(annotation.cookieName()))
+                                                .findFirst()
+                                                .map(Cookie::getValue)
+                                                .orElse(null);
+                                    } else {
+                                        logger.warn("Cannot resolve HTTP cookie value for empty cookie name. " +
+                                                "Please check @Throttling configuration.");
+                                    }
+                                    break;
+
+                                case HeaderValue:
+                                    if (!StringUtils.isEmpty(annotation.headerName())) {
+                                        value = servletRequest.getHeader(annotation.headerName());
+                                    } else {
+                                        logger.warn("Cannot resolve HTTP header value for empty header name. " +
+                                                "Please check @Throttling configuration.");
+                                    }
+                                    break;
+
+                                case PrincipalName:
+                                    if (servletRequest.getUserPrincipal() != null) {
+                                        value = servletRequest.getUserPrincipal().getName();
+                                    } else {
+                                        logger.warn("Cannot resolve servletRequest.getUserPrincipal().getName() " +
+                                                "since servletRequest.getUserPrincipal() is null.");
+                                    }
+                                    break;
+
+                                case RemoteAddr:
+                                    value = servletRequest.getRemoteAddr();
+                                    break;
+                            }
+                        }
+                    }
+
+
+                    return value;
+                };
+
+                final String evaluatedValue = throttlingEvaluator.evaluate();
+
                 ThrottlingKey key = ThrottlingKey.builder()
                         .method(method)
-                        .throttling(annotation)
-                        .headerValue(resolveRequestValue(annotation, ThrottlingType.HeaderValue))
-                        .cookieValue(resolveRequestValue(annotation, ThrottlingType.CookieValue))
-                        .principal(resolveRequestValue(annotation, ThrottlingType.PrincipalName))
-                        .expression(resolveSpEl(annotation, bean, args, clazz, method))
+                        .annotation(annotation)
+                        .evaluatedValue(evaluatedValue)
                         .build();
 
                 ThrottlingGauge gauge;
@@ -100,7 +174,14 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
 
                 gauge.removeEldest();
 
-                if (!gauge.throttle()) throw new ThrottlingException();
+                if (!gauge.throttle()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Cannot proceed with a method call due to @Throttling configuration, type="
+                                + annotation.type() + ", value=" + evaluatedValue);
+                    }
+                    throw new ThrottlingException();
+                }
+
             }
 
             // call original method
@@ -108,48 +189,9 @@ public class ThrottlingBeanPostProcessor implements BeanPostProcessor {
         });
     }
 
-    private String resolveSpEl(Throttling annotation, Object bean, Object[] args, Class<?> clazz, Method method) {
-        String value = null;
-        if (annotation.type().equals(SpEL) && !StringUtils.isEmpty(annotation.expression())) {
-            value = spelEvaluator.evaluate(annotation.expression(), bean, args, clazz, method);
-        }
-        return value;
+    @FunctionalInterface
+    public interface ThrottlingValueEvaluator {
+        String evaluate();
     }
 
-    private String resolveRequestValue(Throttling annotation, ThrottlingType targetValueType) {
-        String value = null;
-
-        if (annotation.type().equals(targetValueType) && servletRequest != null) {
-
-            switch (targetValueType) {
-                case CookieValue:
-                    if (!StringUtils.isEmpty(annotation.cookieName())) {
-                        value = Arrays.stream(servletRequest.getCookies())
-                                .filter(c -> c.getName().equals(annotation.cookieName()))
-                                .findFirst()
-                                .map(Cookie::getValue)
-                                .orElse(null);
-                    }
-                    break;
-
-                case HeaderValue:
-                    if (!StringUtils.isEmpty(annotation.headerName())) {
-                        value = servletRequest.getHeader(annotation.headerName());
-                    }
-                    break;
-
-                case PrincipalName:
-                    if (servletRequest.getUserPrincipal() != null) {
-                        value = servletRequest.getUserPrincipal().getName();
-                    }
-                    break;
-
-                case RemoteAddr:
-                    value = servletRequest.getRemoteAddr();
-                    break;
-            }
-        }
-
-        return value;
-    }
 }

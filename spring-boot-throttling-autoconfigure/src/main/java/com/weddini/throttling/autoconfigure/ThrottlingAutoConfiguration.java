@@ -22,7 +22,6 @@ public class ThrottlingAutoConfiguration {
         this.throttlingProperties = throttlingProperties;
     }
 
-
     @Bean
     @ConditionalOnMissingBean
     public ThrottlingBeanPostProcessor throttlingBeanPostProcessor() {

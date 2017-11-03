@@ -2,5 +2,11 @@
 spring:
   throttling:
     lru-cache-capacity: 100
+
   application:
     name: example
+
+logging:
+  level:
+    ROOT: ERROR
+    com.weddini.throttling: DEBUG

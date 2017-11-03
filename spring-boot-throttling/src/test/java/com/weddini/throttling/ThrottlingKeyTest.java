@@ -39,28 +39,40 @@ public class ThrottlingKeyTest {
         Throttling annotation1 = findAnnotation(method1, Throttling.class);
         Throttling annotation2 = findAnnotation(method1, Throttling.class);
 
+        // method1 + annotation1 + "127.0.0.1"
         ThrottlingKey key1 = ThrottlingKey.builder()
                 .method(method1)
-                .throttling(annotation1)
-                .headerValue("127.0.0.1")
+                .annotation(annotation1)
+                .evaluatedValue("127.0.0.1")
                 .build();
 
+        // method1 + annotation1 + "test"
+        ThrottlingKey key4 = ThrottlingKey.builder()
+                .method(method1)
+                .annotation(annotation1)
+                .evaluatedValue("test")
+                .build();
+
+        Assert.assertNotEquals(key1, key4);
+
+        // method2 + annotation2 + "test"
         ThrottlingKey key2 = ThrottlingKey.builder()
                 .method(method2)
-                .throttling(annotation2)
-                .cookieValue("test")
+                .annotation(annotation2)
+                .evaluatedValue("test")
                 .build();
 
         Assert.assertNotEquals(key1, key2);
 
+        // method1 + annotation1 + "127.0.0.1"
         ThrottlingKey key3 = ThrottlingKey.builder()
                 .method(method1)
-                .throttling(annotation1)
-                .headerValue("127.0.0.1")
+                .annotation(annotation1)
+                .evaluatedValue("127.0.0.1")
                 .build();
 
         Assert.assertEquals(key1.hashCode(), key3.hashCode());
         Assert.assertEquals(key1, key3);
-    }
 
+    }
 }
