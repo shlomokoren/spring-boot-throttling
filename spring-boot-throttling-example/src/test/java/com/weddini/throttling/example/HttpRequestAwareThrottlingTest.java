@@ -56,7 +56,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 192.168.0.1
         for (int i = 0; i < 5; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/remoteAddr/Alex")
                     .with(postProcessor1))
                     .andExpect(status().isOk())
@@ -69,7 +68,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 192.168.0.2
         for (int i = 0; i < 5; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                     .with(postProcessor2))
                     .andExpect(status().isOk())
@@ -86,7 +84,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 192.168.0.1
         for (int i = 0; i < 5; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/remoteAddr/Alex")
                     .with(postProcessor1))
                     .andExpect(status().isOk())
@@ -99,7 +96,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 192.168.0.2
         for (int i = 0; i < 5; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                     .with(postProcessor2))
                     .andExpect(status().isOk())
@@ -117,7 +113,6 @@ public class HttpRequestAwareThrottlingTest {
     public void testHeader() throws Exception {
         // remoteAddr = 10.10.10.10
         for (int i = 0; i < 10; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/header/Alex")
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
@@ -130,7 +125,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 10.10.10.101
         for (int i = 0; i < 10; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/header/Vasya")
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())
@@ -147,7 +141,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 10.10.10.10
         for (int i = 0; i < 10; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/header/Alex")
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
@@ -160,7 +153,6 @@ public class HttpRequestAwareThrottlingTest {
 
         // remoteAddr = 10.10.10.101
         for (int i = 0; i < 10; i++) {
-            System.out.println(i);
             mockMvc.perform(get("/throttling/header/Vasya")
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())

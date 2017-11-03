@@ -3,6 +3,8 @@
 !gradle/wrapper/gradle-wrapper.jar
 target/
 
+mvn-r‌​epo
+
 ### STS ###
 .apt_generated
 .classpath

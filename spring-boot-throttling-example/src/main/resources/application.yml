@@ -8,5 +8,4 @@ spring:
 
 logging:
   level:
-    ROOT: ERROR
     com.weddini.throttling: DEBUG
