@@ -5,7 +5,7 @@
 
 Declarative approach of throttling control over the Spring services. 
 `@Throttling` annotation helps you to limit the number of service method calls per `java.util.concurrent.TimeUnit`
-for a particular user, IP address, HTTP header/cookie value, or using [Spring Expression Language (SpEL)](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html)
+for a particular user, IP address, HTTP header/cookie value, or using [Spring Expression Language (SpEL)](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html).
 
 Pull requests are always welcome. 
 
@@ -23,45 +23,57 @@ Pull requests are always welcome.
 ### Samples
 
 ##### Defaults, Remote IP
+The following throttling configuration allows 1 method calls per SECOND for each unique `HttpServletRequest#getRemoteAddr()`.
+This is 'defaults' for `@Throttling` annotation.
 
 ```java
 @Throttling
 public void serviceMethod() {
 }
 ```
+is the same as:
+
+```java
+@Throttling(type = ThrottlingType.RemoteAddr, limit = 1, timeUnit = TimeUnit.SECONDS)
+public void serviceMethod() {
+}
+```
 
 ##### Spring Expression Language (SpEL)
+The following throttling configuration allows 3 method calls per minute for each unique userName in model object passed as parameter `model.getUserName()`.
+
+Please refer to official [docs on SpEL](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html).
  
 ```java
-@Throttling(limit = 3, timeUnit = TimeUnit.MINUTES, type = ThrottlingType.SpEL, expression = "#model.userName")
+@Throttling(type = ThrottlingType.SpEL, expression = "#model.userName", limit = 3, timeUnit = TimeUnit.MINUTES)
 public void serviceMethod(Model model) {
     log.info("executing service logic for userName = {}", model.getUserName());
 }
 ```
 
 ##### Http cookie value
+The following throttling configuration allows 24 method calls per DAY for each unique cookie value `HttpServletRequest#getCookies()`.
 
 ```java
-@Throttling(limit = 24, timeUnit = TimeUnit.DAYS, type = ThrottlingType.CookieValue, cookieName = "JSESSIONID")
+@Throttling(type = ThrottlingType.CookieValue, cookieName = "JSESSIONID", limit = 24, timeUnit = TimeUnit.DAYS)
 public void serviceMethod() {
 }
 ```
 
 ##### Http header value
+The following throttling configuration allows 10 method calls per HOUR for each unique `HttpServletRequest#getHeader('X-Forwarded-For')`.
 
 ```java
-@Throttling(limit = 10, timeUnit = TimeUnit.HOURS, type = ThrottlingType.HeaderValue, headerName = "X-Forwarded-For")
+@Throttling(type = ThrottlingType.HeaderValue, headerName = "X-Forwarded-For", limit = 10, timeUnit = TimeUnit.HOURS)
 public void serviceMethod() {
 }
 ```
 
 ##### User Principal Name
+The following throttling configuration allows 1 method calls per HOUR for each unique `HttpServletRequest#getUserPrincipal().getName()`.
 
 ```java
-@Throttling(limit = 10,
-        timeUnit = TimeUnit.HOURS,
-        type = ThrottlingType.HeaderValue,
-        headerName = "X-Forwarded-For")
+@Throttling(type = ThrottlingType.PrincipalName, limit = 1, timeUnit = TimeUnit.HOURS)
 public void serviceMethod() {
 }
 ```
