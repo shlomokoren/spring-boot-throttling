@@ -4,42 +4,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.weddini.throttling</groupId>
-    <artifactId>spring-boot-throttling-autoconfigure</artifactId>
+    <artifactId>spring-boot-throttling-starter</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>spring-boot-throttling-autoconfigure</name>
-    <description>Auto-configuration project for spring-boot-throttling</description>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.8.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+    <name>spring-boot-throttling-starter</name>
+    <description>Starter project for spring-boot-throttling</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-boot-throttling.version>0.0.1</spring-boot-throttling.version>
         <github.global.server>github</github.global.server>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.weddini.throttling</groupId>
-            <artifactId>spring-boot-throttling</artifactId>
-            <version>${spring-boot-throttling.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-boot-throttling-autoconfigure</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
