@@ -49,7 +49,7 @@
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.11</version>
                 <configuration>
-                    <!--<merge>true</merge>-->
+                    <merge>true</merge>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
                     <outputDirectory>${project.basedir}/mvn-r‌​epo</outputDirectory>
