@@ -7,12 +7,12 @@ Declarative approach of throttling control over the Spring services.
 `@Throttling` annotation helps you to limit the number of service method calls per `java.util.concurrent.TimeUnit`
 for a particular user, IP address, HTTP header/cookie value, or using [Spring Expression Language (SpEL)](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html).
 
-Pull requests are always welcome. 
+Please see [example project](https://github.com/weddini/spring-boot-throttling/tree/master/spring-boot-throttling-example). Pull requests are welcome. 
 
 
 ### Getting Started
 
-##### Gradle setup
+#### Gradle setup
 
 Add maven repo with url https://jitpack.io to you project
 
@@ -30,7 +30,7 @@ compile 'com.github.weddini:spring-boot-throttling:0.0.3'
 
 ```
 
-##### Maven setup
+#### Maven setup
 Add this GitHub repository to you project
 
 ```xml
@@ -58,7 +58,7 @@ Add the following code to dependencies section of your pom.xml:
 
 ### Samples
 
-##### Defaults (Remote IP)
+#### Defaults (Remote IP)
 The following throttling configuration allows 1 method calls per SECOND for each unique `HttpServletRequest#getRemoteAddr()`.
 This is 'defaults' for `@Throttling` annotation.
 
@@ -75,7 +75,7 @@ public void serviceMethod() {
 }
 ```
 
-##### Spring Expression Language (SpEL)
+#### Spring Expression Language (SpEL)
 The following throttling configuration allows 3 method calls per MINUTE for each unique userName in model object passed as parameter, i.e. `model.getUserName()`.
 
 Please refer to official [docs on SpEL](https://docs.spring.io/spring/docs/4.3.12.RELEASE/spring-framework-reference/html/expressions.html).
@@ -87,7 +87,7 @@ public void serviceMethod(Model model) {
 }
 ```
 
-##### Http cookie value
+#### Http cookie value
 The following throttling configuration allows 24 method calls per DAY for each unique cookie value retrieved from `HttpServletRequest#getCookies()`.
 
 ```java
@@ -96,7 +96,7 @@ public void serviceMethod() {
 }
 ```
 
-##### Http header value
+#### Http header value
 The following throttling configuration allows 10 method calls per HOUR for each unique header value retrieved from `HttpServletRequest#getHeader('X-Forwarded-For')`.
 
 ```java
@@ -105,7 +105,7 @@ public void serviceMethod() {
 }
 ```
 
-##### User Principal Name
+#### User Principal Name
 The following throttling configuration allows 1 method calls per HOUR for each unique `HttpServletRequest#getUserPrincipal().getName()`.
 
 ```java
@@ -117,7 +117,7 @@ public void serviceMethod() {
 
 ### Error handling
 
-`ThrottlingException` is thrown when method reaches `@Throttling` configuration limit. 
+`ThrottlingException` is thrown when method reaches `@Throttling` configuration limit. Service method won't be executed. 
 
 ```java
 @ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS, reason = "Too many requests")
