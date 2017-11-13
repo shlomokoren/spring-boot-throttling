@@ -5,7 +5,7 @@
 
     <groupId>com.weddini.throttling</groupId>
     <artifactId>spring-boot-throttling-starter</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8</version>
     <packaging>jar</packaging>
 
     <name>spring-boot-throttling-starter</name>
@@ -15,17 +15,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-boot-throttling-autoconfigure.version>0.0.7</spring-boot-throttling-autoconfigure.version>
+        <spring-boot-throttling-autoconfigure.version>0.0.8</spring-boot-throttling-autoconfigure.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>spring-boot-throttling-repo</id>
+            <id>spring-boot-throttling-repo-int</id>
             <url>https://raw.github.com/weddini/spring-boot-throttling/mvn-repo/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
+        </repository>
+        <repository>
+            <id>jitpack.io-int</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
