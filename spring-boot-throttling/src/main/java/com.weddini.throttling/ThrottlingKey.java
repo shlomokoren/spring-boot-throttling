@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Class holding method execution context
- * Used as a key in {@link LRUCache}
+ * Used as a key in {@link com.weddini.throttling.cache.Cache}
  *
  * @author Nikolay Papakha (nikolay.papakha@gmail.com)
  */
@@ -25,7 +25,7 @@ public class ThrottlingKey {
         this.evaluatedValue = evaluatedValue;
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -84,7 +84,7 @@ public class ThrottlingKey {
                 '}';
     }
 
-    static class Builder {
+    public static class Builder {
         private Method method;
         private int limit;
         private ThrottlingType type;

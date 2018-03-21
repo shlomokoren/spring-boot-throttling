@@ -22,11 +22,17 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class HttpRequestAwareThrottlingTest {
+public class HttpThrottlingTest {
 
-    private final MediaType contentType = new MediaType(
+    private final MediaType jsonContentType = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8")
+    );
+
+    private final MediaType textPlainContentType = new MediaType(
+            MediaType.TEXT_PLAIN.getType(),
+            MediaType.TEXT_PLAIN.getSubtype(),
             Charset.forName("utf8")
     );
 
@@ -37,10 +43,77 @@ public class HttpRequestAwareThrottlingTest {
 
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
+
+    @Test
+    public void testThrottledController() throws Exception {
+        RequestPostProcessor postProcessor1 = request -> {
+            request.setRemoteAddr("192.168.0.1");
+            return request;
+        };
+
+        RequestPostProcessor postProcessor2 = request -> {
+            request.setRemoteAddr("192.168.0.2");
+            return request;
+        };
+
+        // 192.168.0.1
+        for (int i = 0; i < 3; i++) {
+            mockMvc.perform(get("/throttledController")
+                    .with(postProcessor1))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(textPlainContentType));
+        }
+
+        mockMvc.perform(get("/throttledController")
+                .with(postProcessor1))
+                .andExpect(status().is(429));
+
+
+        // 192.168.0.2
+        for (int i = 0; i < 3; i++) {
+            mockMvc.perform(get("/throttledController")
+                    .with(postProcessor2))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(textPlainContentType));
+        }
+
+        mockMvc.perform(get("/throttledController")
+                .with(postProcessor2))
+                .andExpect(status().is(429));
+
+        // sleep 1 minute
+        Thread.sleep(60 * 1000 + 100);
+
+
+        // 192.168.0.1
+        for (int i = 0; i < 3; i++) {
+            mockMvc.perform(get("/throttledController")
+                    .with(postProcessor1))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(textPlainContentType));
+        }
+
+        mockMvc.perform(get("/throttledController")
+                .with(postProcessor1))
+                .andExpect(status().is(429));
+
+
+        // 192.168.0.2
+        for (int i = 0; i < 3; i++) {
+            mockMvc.perform(get("/throttledController")
+                    .with(postProcessor2))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(textPlainContentType));
+        }
+
+        mockMvc.perform(get("/throttledController")
+                .with(postProcessor2))
+                .andExpect(status().is(429));
+    }
 
     @Test
     public void testRemoteAddr() throws Exception {
@@ -59,7 +132,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/remoteAddr/Alex")
                     .with(postProcessor1))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/remoteAddr/Alex")
                 .with(postProcessor1))
@@ -70,7 +143,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                     .with(postProcessor2))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                 .with(postProcessor2))
@@ -84,7 +157,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/remoteAddr/Alex")
                     .with(postProcessor1))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/remoteAddr/Alex")
                 .with(postProcessor1))
@@ -95,7 +168,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                     .with(postProcessor2))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/remoteAddr/Vasya")
                 .with(postProcessor2))
@@ -110,7 +183,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/header/Alex")
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/header/Alex")
                 .header("X-Forwarded-For", "10.10.10.10"))
@@ -121,7 +194,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/header/Vasya")
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
 
         mockMvc.perform(get("/throttling/header/Vasya")
@@ -136,7 +209,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/header/Alex")
                     .header("X-Forwarded-For", "10.10.10.10"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/header/Alex")
                 .header("X-Forwarded-For", "10.10.10.10"))
@@ -147,7 +220,7 @@ public class HttpRequestAwareThrottlingTest {
             mockMvc.perform(get("/throttling/header/Vasya")
                     .header("X-Forwarded-For", "10.10.10.101"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType));
+                    .andExpect(content().contentType(jsonContentType));
         }
         mockMvc.perform(get("/throttling/header/Vasya")
                 .header("X-Forwarded-For", "10.10.10.101"))

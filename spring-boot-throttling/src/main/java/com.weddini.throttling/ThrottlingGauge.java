@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Class holding method calls information
- * Used as a value in {@link LRUCache}
+ * Used as a value in {@link com.weddini.throttling.cache.Cache}
  *
  * @author Nikolay Papakha (nikolay.papakha@gmail.com)
  */

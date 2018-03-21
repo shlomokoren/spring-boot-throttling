@@ -50,7 +50,7 @@ Add the following code to dependencies section of your pom.xml:
 <dependency>
     <groupId>com.weddini.throttling</groupId>
     <artifactId>spring-boot-throttling-starter</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
 </dependency>
 ```
 

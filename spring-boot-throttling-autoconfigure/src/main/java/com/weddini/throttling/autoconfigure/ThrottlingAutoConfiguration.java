@@ -1,9 +1,15 @@
 package com.weddini.throttling.autoconfigure;
 
-import com.weddini.throttling.ThrottlingBeanPostProcessor;
+import com.weddini.throttling.service.ThrottlingEvaluator;
+import com.weddini.throttling.service.ThrottlingEvaluatorImpl;
+import com.weddini.throttling.service.ThrottlingService;
+import com.weddini.throttling.service.ThrottlingServiceImpl;
+import com.weddini.throttling.support.ThrottlingBeanPostProcessor;
+import com.weddini.throttling.support.ThrottlingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +31,27 @@ public class ThrottlingAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ThrottlingBeanPostProcessor throttlingBeanPostProcessor() {
-        return new ThrottlingBeanPostProcessor(throttlingProperties.getLruCacheCapacity() != null ?
+        return new ThrottlingBeanPostProcessor(throttlingEvaluator(), throttlingService());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnWebApplication
+    public ThrottlingInterceptor throttlingInterceptor() {
+        return new ThrottlingInterceptor(throttlingEvaluator(), throttlingService());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ThrottlingEvaluator throttlingEvaluator() {
+        return new ThrottlingEvaluatorImpl();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ThrottlingService throttlingService() {
+        return new ThrottlingServiceImpl(throttlingProperties.getLruCacheCapacity() != null ?
                 throttlingProperties.getLruCacheCapacity() : DEFAULT_LRU_CACHE_CAPACITY);
     }
+
 }

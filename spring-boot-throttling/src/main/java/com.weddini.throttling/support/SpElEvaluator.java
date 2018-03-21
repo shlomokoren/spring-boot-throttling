@@ -1,4 +1,4 @@
-package com.weddini.throttling;
+package com.weddini.throttling.support;
 
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.expression.AnnotatedElementKey;

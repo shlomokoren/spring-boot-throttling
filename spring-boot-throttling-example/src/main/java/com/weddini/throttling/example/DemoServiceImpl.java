@@ -13,10 +13,10 @@ public class DemoServiceImpl implements DemoService {
 
     /**
      * Throttling configuration:
-     *
-     *      allow 3 method calls per minute
-     *      for each userName in model object
-     *      passed as parameter
+     * <p>
+     * allow 3 method calls per minute
+     * for each userName in model object
+     * passed as parameter
      */
     @Override
     @Throttling(limit = 3,
@@ -30,9 +30,9 @@ public class DemoServiceImpl implements DemoService {
 
     /**
      * Throttling configuration:
-     *
-     *      allow 10 method calls per minute
-     *      for each unique {@code javax.servlet.http.HttpServletRequest#getHeader()}
+     * <p>
+     * allow 10 method calls per minute
+     * for each unique {@code javax.servlet.http.HttpServletRequest#getHeader()}
      */
     @Override
     @Throttling(limit = 10,
@@ -46,9 +46,9 @@ public class DemoServiceImpl implements DemoService {
 
     /**
      * Throttling configuration:
-     *
-     *      allow 5 method calls per minute
-     *      for each unique {@code javax.servlet.http.HttpServletRequest#getRemoteAddr()}
+     * <p>
+     * allow 5 method calls per minute
+     * for each unique {@code javax.servlet.http.HttpServletRequest#getRemoteAddr()}
      */
     @Override
     @Throttling(limit = 5, timeUnit = TimeUnit.MINUTES)
