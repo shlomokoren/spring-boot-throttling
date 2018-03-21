@@ -26,7 +26,7 @@ repositories {
 Add the following code to dependencies section of your build.gradle:
 
 ```groovy
-compile('com.github.weddini.spring-boot-throttling:spring-boot-throttling-starter:0.0.8')
+compile('com.github.weddini.spring-boot-throttling:spring-boot-throttling-starter:0.0.9')
 ```
 
 #### Maven setup
