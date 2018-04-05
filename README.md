@@ -18,7 +18,7 @@ Add maven repo with url https://jitpack.io to you project
 
 ```groovy
 repositories {
- maven { url "https://jitpack.io" }
+ maven { url "https://raw.github.com/weddini/spring-boot-throttling/mvn-repo/" }
 }
 
 ```
@@ -26,7 +26,7 @@ repositories {
 Add the following code to dependencies section of your build.gradle:
 
 ```groovy
-compile('com.github.weddini.spring-boot-throttling:spring-boot-throttling-starter:0.0.9')
+compile('com.weddini.throttling:spring-boot-throttling-starter:0.0.9')
 ```
 
 #### Maven setup
