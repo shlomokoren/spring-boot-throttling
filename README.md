@@ -14,7 +14,7 @@ Please see [example project](https://github.com/weddini/spring-boot-throttling/t
 
 #### Gradle setup
 
-Add maven repo with url https://jitpack.io to you project
+Add maven repo to you project
 
 ```groovy
 repositories {
