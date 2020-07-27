@@ -36,7 +36,7 @@ Add this GitHub repository to you project
 <repositories>
     <repository>
         <id>spring-boot-throttling-repo</id>
-        <url>https://raw.github.com/weddini/spring-boot-throttling/mvn-repo/</url>
+        <url>https://raw.github.com/shlomokoren/spring-boot-throttling/mvn-repo/</url>
         <snapshots>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
