@@ -30,6 +30,8 @@ public @interface Throttling {
      */
     int limit() default 1;
 
+
+
     /**
      * Returns ThrottlingType {@see ThrottlingType}
      * Used to evaluate method execution context.
@@ -46,6 +48,15 @@ public @interface Throttling {
      * @return TimeUnit to measure the number of calls
      */
     TimeUnit timeUnit() default TimeUnit.SECONDS;
+
+
+    /**
+     * Returns throttling duration
+     * Default value is 1, it means 1 second considering the default TimeUnit
+     *
+     * @return The throttle duration to measure the number of calls
+     */
+    long duration() default 1L;
 
     /**
      * Returns header name for type = {@code ThrottlingType.HeaderValue}

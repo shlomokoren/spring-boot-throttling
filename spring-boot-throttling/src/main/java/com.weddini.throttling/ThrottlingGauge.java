@@ -18,9 +18,9 @@ public class ThrottlingGauge {
     private final ArrayList<Long> callTimestamps;
     private final ReadWriteLock lock;
 
-    public ThrottlingGauge(TimeUnit timeUnit, int throttleLimit) {
+    public ThrottlingGauge(TimeUnit timeUnit, long duration, int throttleLimit) {
         this.throttleLimit = throttleLimit;
-        mills = timeUnit.toMillis(1);
+        mills = timeUnit.toMillis(duration);
         callTimestamps = new ArrayList<>();
         lock = new ReentrantReadWriteLock(true);
     }
