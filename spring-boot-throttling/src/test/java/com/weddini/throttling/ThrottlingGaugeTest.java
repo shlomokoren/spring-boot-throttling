@@ -9,7 +9,7 @@ public class ThrottlingGaugeTest {
 
     @Test
     public void testThrottlingGauge() throws InterruptedException {
-        ThrottlingGauge gauge = new ThrottlingGauge(TimeUnit.SECONDS, 1);
+        ThrottlingGauge gauge = new ThrottlingGauge(TimeUnit.SECONDS, 1L, 1);
 
         gauge.removeEldest();
         Assert.isTrue(gauge.throttle(), "Should be ok with the first call");
